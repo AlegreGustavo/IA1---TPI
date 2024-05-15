@@ -1,3 +1,11 @@
+######
+#   TPI DE INTELIGENCIA ARTIFICIAL
+#
+#
+#
+#
+######
+
 import sys
 import random
 
