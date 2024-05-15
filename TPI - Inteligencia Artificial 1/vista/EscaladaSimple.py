@@ -50,7 +50,7 @@ class EscaladaSimple(QGraphicsScene):
     def setGui(self):
         self.vistaEscaladaSimple.setGeometry(self.master.width() / 2, self.master.height() / 3, self.master.width() / 2, self.master.height() / 3)
         
-        qL_escaladaSimple = QLabel("<h1>Escalada Simple</h1>", parent=self.vistaEscaladaSimple)
+        qL_escaladaSimple = QLabel("<h2>Escalada Simple</h2>", parent=self.vistaEscaladaSimple)
         qL_escaladaSimple.move(10, 10)
 
         self.eR_escaladaSimpleLayout.addWidget(qL_escaladaSimple)        
@@ -59,7 +59,7 @@ class EscaladaSimple(QGraphicsScene):
         # Vista que corresponde al grafo de la Escalada Simple:
         #
         ###
-        self.vistaEscaladaSimpleGrafo.setGeometry((self.master.width() / 2) + (self.master.width() / 4), self.master.height() / 3, self.master.width() / 4, self.master.height() / 3)
+        self.vistaEscaladaSimpleGrafo.setGeometry((self.master.width() / 2) + (self.master.width() / 6), self.master.height() / 3, self.master.width() / 3, self.master.height() / 3)
         
         centralWidgetEscaladaSimple = QWidget(self.vistaEscaladaSimpleGrafo)
         

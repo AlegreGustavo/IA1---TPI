@@ -49,7 +49,7 @@ class MaximaPendiente(QGraphicsScene):
     def setGui(self):
         self.vistaMaximaPendiente.setGeometry(self.master.width() / 2, self.master.height() * 2 / 3, self.master.width() / 2, self.master.height() / 3)
         
-        qL_maximaPendiente = QLabel("<h1>Máxima Pendiente</h1>", parent=self.vistaMaximaPendiente)
+        qL_maximaPendiente = QLabel("<h2>Máxima Pendiente</h2>", parent=self.vistaMaximaPendiente)
         qL_maximaPendiente.move(10, 10)
 
         self.eR_maximaPendienteLayout.addWidget(qL_maximaPendiente)
@@ -57,7 +57,7 @@ class MaximaPendiente(QGraphicsScene):
         self.vistaMaximaPendiente.setLayout(self.eR_maximaPendienteLayout)
         
         ### Vista que corresponde al grafo de la Máxima Pendiente:###
-        self.vistaMaximaPendienteGrafo.setGeometry((self.master.width() / 2) + (self.master.width() / 4), self.master.height() * 2 / 3, self.master.width() / 4, self.master.height() /3 )
+        self.vistaMaximaPendienteGrafo.setGeometry((self.master.width() / 2) + (self.master.width() / 6), self.master.height() * 2 / 3, self.master.width() / 3, self.master.height() /3 )
         
         centralWidgetMaximaPendiente = QWidget(self.vistaMaximaPendienteGrafo)
         
