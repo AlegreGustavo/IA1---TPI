@@ -60,20 +60,21 @@ class Estado:
         self.__tipo = "INICIAL"
         
     def establecerFinal(self):
+        self.__valor = 0
         self.__tipo = "FINAL"
         
     def establecerNormal(self):
         self.__tipo = None
     
-    ##
-    # Función que devuelve el color con que se pintará el nodo, dependiendo el tipo del Estado.
-    #
     def color(self):
+        """
+        Función que devuelve el color con que se pintará el nodo, dependiendo el tipo del Estado.
+        """
         color = COLOR_NODO
         
-        if self.tipo == "INICIAL":
+        if self.__tipo == "INICIAL":
             color = COLOR_NODO_INICIAL
-        if self.tipo == "FINAL":
+        if self.__tipo == "FINAL":
             color = COLOR_NODO_FINAL
             
         return color

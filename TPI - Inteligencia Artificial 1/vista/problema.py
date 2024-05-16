@@ -46,7 +46,7 @@ class EscenaProblema(QGraphicsScene):
         #
         # Vista que corresponde al grafo que se ve en la escena del problema:
         ###
-        self.vistaProblemaGrafo.setGeometry(0, self.master.height() / 3, self.master.width() / 2, self.master.height() * 2 / 3)
+        self.vistaProblemaGrafo.setGeometry(100, self.master.height() / 3, self.master.width() / 2 - 100, self.master.height() * 2 / 3)
         
         # Crear un nuevo canvas y agregarlo al layout vertical
         self.canvas = PlotCanvas(self.centralWidget, width=50, height=40)

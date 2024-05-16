@@ -107,8 +107,17 @@ class VentanaPrincipal(QMainWindow):
         blackPen.setWidth(5)    
         
         self.botonDibujarArbol = QPushButton('Dibujar Árbol', self)
-        self.botonDibujarArbol.setGeometry(40, 210, 100, 30)
+        self.botonDibujarArbol.setGeometry(15, 220, 100, 30)
         self.botonDibujarArbol.clicked.connect(self.dibujarGrafoCargado)
+        
+        self.heuristica_label = QLabel("Heurística:", self)
+        self.heuristica_label.setGeometry(15, 230, 150, 150)
+        self.heuristica_list = QListWidget(self)
+        self.heuristica_list.setGeometry(15, 315, 80, 250)
+        self.estadoInicial_label = QLabel("Estado Inicial: ", self)
+        self.estadoInicial_label.setGeometry(15, 250, 200,50)
+        self.estadoFinal_label = QLabel("Estado Final: ", self)
+        self.estadoFinal_label.setGeometry(15, 265, 200,50)
         
     def dibujarGrafoCargado(self):
         #self.limpiarCanvas()
@@ -312,6 +321,7 @@ class VentanaPrincipal(QMainWindow):
         grafoMaximaPendiente, posMaximaPendiente = self.construirGrafoMaximaPendiente()
         self.limpiarEscenas()
         self.dibujarEscenas(grafo, grafoEscaladaSimple, grafoMaximaPendiente, posEscaladaSimple, posMaximaPendiente)
+        self.actualizarDatosProblema()
         
     def siguiente_paso_simple(self):
         if self.indiceSimple < len(self.nodosEscaladaSimple) - 1:
@@ -586,7 +596,11 @@ class VentanaPrincipal(QMainWindow):
                 posicionRandom = random.randint(0, len(listaEstadosAuxiliar)-1)
                 self.agregarRelacionNombre(listaEstadosAuxiliar[posicionRandom].nombre, estado.nombre)
                 listaEstadosAuxiliar.remove(listaEstadosAuxiliar[posicionRandom])
-                
+        
+        estadoInicialAleatorio = self.estados[random.randint(0, len(self.estados)-1)]
+        self.establecerNodoInicial(estadoInicialAleatorio.nombre)
+        estadoFinalAleatorio = self.estados[random.randint(0, len(self.estados)-1)]
+        self.establecerNodoFinal(estadoFinalAleatorio.nombre)        
         # Actualización de los estados de la lista:
         self.escenaMenu.actualizarListaEstados(self.estados)
         #Actualización de los estados en el combobox de relaciones:
@@ -633,6 +647,16 @@ class VentanaPrincipal(QMainWindow):
             if estado.nombre == nombre:
                 estado.quitarRelacion(relacion)
                 relacion.quitarRelacion(estado)
+                
+    def actualizarDatosProblema(self):
+        self.estadoInicial_label.setText("Estado Inicial: ")
+        self.estadoFinal_label.setText("Estado Final: ")
+        self.heuristica_list.clear()
+        
+        self.estadoInicial_label.setText(self.estadoInicial_label.text() + self.estadoInicial.nombre)
+        self.estadoFinal_label.setText(self.estadoFinal_label.text() + self.estadoFinal.nombre)
+        for estado in self.estados:
+            self.heuristica_list.addItem(estado.nombre + ': ' + str(estado.valor))
     
 # EJECUCIÓN DEL PROGRAMA:    
 if __name__ == "__main__":

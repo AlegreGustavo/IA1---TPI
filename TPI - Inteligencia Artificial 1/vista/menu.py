@@ -113,12 +113,12 @@ class EscenaMenu(QGraphicsScene):
         dibujarGrafoAleatorio_cantidadEstados_layout.addWidget(self.cantidadEstados_label)
         dibujarGrafoAleatorio_cantidadEstados_layout.addWidget(self.cantidadEstados_input)
         
-        self.cantidadMaximaRelaciones = QLabel("Cantidad máxima de relaciones:")
-        self.cantidadMaximaRelaciones_input = QLineEdit()
+        #self.cantidadMaximaRelaciones = QLabel("Cantidad máxima de relaciones:")
+        #self.cantidadMaximaRelaciones_input = QLineEdit()
         
         dibujarGrafoAleatorio_cantidadRelaciones_layout = QHBoxLayout()
-        dibujarGrafoAleatorio_cantidadRelaciones_layout.addWidget(self.cantidadMaximaRelaciones)
-        dibujarGrafoAleatorio_cantidadRelaciones_layout.addWidget(self.cantidadMaximaRelaciones_input)
+        # dibujarGrafoAleatorio_cantidadRelaciones_layout.addWidget(self.cantidadMaximaRelaciones)
+        # dibujarGrafoAleatorio_cantidadRelaciones_layout.addWidget(self.cantidadMaximaRelaciones_input)
         
         self.dibujar_grafo_button = QPushButton("Dibujar grafo aleatorio")
         self.dibujar_grafo_button.clicked.connect(self.dibujarGrafoAleatorio)
