@@ -134,6 +134,7 @@ class VentanaPrincipal(QMainWindow):
         A.agregarRelacion(C)
         A.agregarRelacion(E)
         A.agregarRelacion(B)
+        B.agregarRelacion(A)
         B.agregarRelacion(E)
         B.agregarRelacion(H)
         C.agregarRelacion(A)
@@ -227,7 +228,9 @@ class VentanaPrincipal(QMainWindow):
         return moved_nodes
     
     def construir_edges(self, solucion, grafoResultado):
-        # Convierte el arreglo de la Solución Escalada Simple a su "forma edges"
+        """
+        Convierte el arreglo de la Solución Escalada Simple a su "forma edges"
+        """
         edges = [] #(x, y)
         for estado in solucion:
             for edge in estado.relaciones:
@@ -466,8 +469,10 @@ class VentanaPrincipal(QMainWindow):
             solucionEncontrada = estadoActual
         return estadosSolucion
     
-    #Función para evaluar si una relación ya fue recorrida. De esta forma, el árbol no creará conexiones múltiples a los nodos.
     def enCamino(self, solucion, relacionEvaluar):
+        """
+        Función para evaluar si una relación ya fue recorrida. De esta forma, el árbol no creará conexiones múltiples a los nodos.
+        """
         retorno = False
         
         for estado in solucion:
@@ -502,25 +507,28 @@ class VentanaPrincipal(QMainWindow):
         #Actualización de los estados en el combobox de relaciones:
         self.escenaMenu.actualizarComboRelaciones(self.estados)
     
-    ##
-    # Establece como nodo inicial al nodo con el nombre del estado pasado como @nombreEstadoInicial    
     def establecerNodoInicial(self, nombreEstadoInicial):
+        """
+        Establece como nodo inicial al nodo con el nombre del estado pasado como @nombreEstadoInicial    
+        """
         for estado in self.estados:
             if estado.nombre == nombreEstadoInicial:
                 estado.establecerInicial()
                 self.estadoInicial = estado
     
-    ##
-    # Establece como nodo final al nodo con el nombre del estado pasado como @nombreEstadoFinal               
     def establecerNodoFinal(self, nombreEstadoFinal):
+        """
+        Establece como nodo final al nodo con el nombre del estado pasado como @nombreEstadoFinal     
+        """
         for estado in self.estados:
             if estado.nombre == nombreEstadoFinal:
                 estado.establecerFinal()
                 self.estadoFinal = estado
     
-    ##
-    # Elimina el nodo inicial y final de la lista de @self.estados.                
     def quitarInicialFinal(self):
+        """
+        Elimina el nodo inicial y final de la lista de @self.estados.
+        """
         for estado in self.estados:
             estado.establecerNormal()
         
@@ -585,20 +593,22 @@ class VentanaPrincipal(QMainWindow):
         self.escenaMenu.actualizarComboRelaciones(self.estados)
         self.dibujarGrafo()
         
-    ##
-    #   Función para verificar si el nombre pasado ya existe entre los estados presentes.
-    #   Si el nombre del estado ya se encuentra, devuelve True; caso contrario, devuelve False.
     def existeNombreEstado(self, nombre):
+        """
+        Función para verificar si el nombre pasado ya existe entre los estados presentes.
+        Si el nombre del estado ya se encuentra, devuelve True; caso contrario, devuelve False.
+        """
         retorno = False
         for estado in self.estados:
             if estado.nombre == nombre:
                 retorno = True
         return retorno
 
-    ##
-    #   Función que agrega la relación de dos estaos a partir de los nombres pasados. Primero busca los objetos del arreglo.
-    #   Después, solo agrega la relación.
     def agregarRelacionNombre(self, nombre, nombreRelacion):
+        """
+        Función que agrega la relación de dos estaos a partir de los nombres pasados. Primero busca los objetos del arreglo.
+        Después, solo agrega la relación.
+        """
         relacion = None
         for estado in self.estados:
             if estado.nombre == nombreRelacion:
@@ -608,6 +618,21 @@ class VentanaPrincipal(QMainWindow):
             if estado.nombre == nombre:
                 estado.agregarRelacion(relacion)
                 relacion.agregarRelacion(estado)
+                
+    def quitarRelacionNombre(self, nombre, nombreRelacionQuitar):
+        """
+        Función que quita la relación de dos estados a partir de los nombres pasados. Primero busca los objetos del arreglo de estados.
+        Después, solo quita la relación.
+        """
+        relacion = None
+        for estado in self.estados:
+            if estado.nombre == nombreRelacionQuitar:
+                relacion = estado
+        
+        for estado in self.estados:
+            if estado.nombre == nombre:
+                estado.quitarRelacion(relacion)
+                relacion.quitarRelacion(estado)
     
 # EJECUCIÓN DEL PROGRAMA:    
 if __name__ == "__main__":

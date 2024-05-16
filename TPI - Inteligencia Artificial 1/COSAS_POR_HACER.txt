@@ -1,0 +1,16 @@
+Cosas pendiente (sin orden en específico):
+
+* Heurísticas y aplicarlas (Euclideana y Manhattan)
+* Lábeles de las heurísticas en los gráficos.
+* Control de errores. Hay que hacer controles en varios lugares. (Por ejemplo, da error si queremos graficar sin tener nodo inicial o final).
+    > Graficar sin tener un nodo inicial y final da error.
+    > Antes de resolver el grafo (Escalada Simple y Máxima Pendiente) debería haber un nodo inicial y final.
+
+* La generación del árbol aleatorio.
+* Ver que lo de las relaciones anden.
+
+* Tamaño y distribución de ventanitas.
+    > Ver si agregar o quitar algo.
+
+
+// Te re aprecio Juliiiii. Porfa seguí así, no cambies. :D

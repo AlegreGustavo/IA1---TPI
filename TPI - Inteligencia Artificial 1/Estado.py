@@ -53,6 +53,9 @@ class Estado:
     def agregarRelacion(self, relacion):
         self.__relaciones.append(relacion)
         
+    def quitarRelacion(self, relacion):
+        self.__relaciones.remove(relacion)
+        
     def establecerInicial(self):
         self.__tipo = "INICIAL"
         

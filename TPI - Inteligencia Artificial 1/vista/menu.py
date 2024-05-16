@@ -81,9 +81,12 @@ class EscenaMenu(QGraphicsScene):
         self.conoce_a_comboBox = QComboBox()
         self.btnConoceA_AgregarRelacion = QPushButton("Agregar Relación")
         self.btnConoceA_AgregarRelacion.clicked.connect(self.agregarRelacion)
+        self.btnConoceA_quitarRelacion = QPushButton("Quitar Relación")
+        self.btnConoceA_quitarRelacion.clicked.connect(self.quitarRelacion)
         
         conoce_a_layout.addWidget(self.conoce_a_label)
         conoce_a_layout.addWidget(self.conoce_a_list)
+        conoce_a_layout.addWidget(self.btnConoceA_quitarRelacion)
         conoce_a_layout.addWidget(self.conoce_a_ComboBox_label)
         conoce_a_layout.addWidget(self.conoce_a_comboBox)
         conoce_a_layout.addWidget(self.btnConoceA_AgregarRelacion)
@@ -192,6 +195,16 @@ class EscenaMenu(QGraphicsScene):
         nombreEstado = self.lista_estados.currentItem().text()
         nombreRelacionAgregar = self.conoce_a_comboBox.currentText()
         self.master.agregarRelacionNombre(nombreEstado, nombreRelacionAgregar)
+        
+        # Actualizar tanto la lista como el combobox:
+        self.actualizarListaConoceA()
+        # Redibujar los grafos:
+        self.master.dibujarGrafo()
+        
+    def quitarRelacion(self):
+        nombreEstado = self.lista_estados.currentItem().text()
+        nombreRelacionQuitar = self.conoce_a_list.currentItem().text()
+        self.master.quitarRelacionNombre(nombreEstado, nombreRelacionQuitar)
         
         # Actualizar tanto la lista como el combobox:
         self.actualizarListaConoceA()
