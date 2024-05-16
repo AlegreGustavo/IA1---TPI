@@ -6,11 +6,14 @@ Cosas pendiente (sin orden en específico):
     > Graficar sin tener un nodo inicial y final da error.
     > Antes de resolver el grafo (Escalada Simple y Máxima Pendiente) debería haber un nodo inicial y final.
 
-* La generación del árbol aleatorio.
-* Ver que lo de las relaciones anden.
+* Ver que lo de las relaciones anden. <--- POR AHORA ME PARECE QUE ANDA. (Tal vez controlar que estén elegidos 2 estados para que deje agregar/quitar relaciones).
 
 * Tamaño y distribución de ventanitas.
     > Ver si agregar o quitar algo.
 
 
 // Te re aprecio Juliiiii. Porfa seguí así, no cambies. :D
+
+VIENDO POR AHORA:
+FABIX:
+    - La generación del árbol aleatorio. <--- Viendo por ahora. Voy a hacer que el árbol se genere solo ingresando la cantidad de estados. las relaciones serán aleatorias (sino me complico al pp. En todo caso después le amplío)
