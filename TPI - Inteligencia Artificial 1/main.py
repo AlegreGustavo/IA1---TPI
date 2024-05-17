@@ -454,6 +454,10 @@ class VentanaPrincipal(QMainWindow):
             sucesor = estadoActual.valor
             relacionesOrdenadas = self.ordenarEstados(estadoActual.relaciones)
             for relacion in relacionesOrdenadas:
+                if relacion == self.estadoFinal:
+                    relacionAgregarSolucion = Estado(relacion.nombre, relacion.valor, relacion.posicion)
+                    estadoAgregarSolucion.agregarRelacion(relacionAgregarSolucion)
+                    break
                 if relacion.valor < estadoActual.valor and relacion.valor < sucesor:
                     estadoNuevo = relacion
                     sucesor = relacion.valor

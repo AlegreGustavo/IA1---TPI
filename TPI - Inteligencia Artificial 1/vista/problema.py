@@ -30,6 +30,7 @@ class EscenaProblema(QGraphicsScene):
         
         #CANVAS para dibujar los gráficos:
         self.canvas = None
+        self.pos = []
         
         self.setGui()
         
@@ -46,7 +47,7 @@ class EscenaProblema(QGraphicsScene):
         #
         # Vista que corresponde al grafo que se ve en la escena del problema:
         ###
-        self.vistaProblemaGrafo.setGeometry(100, self.master.height() / 3, self.master.width() / 2 - 100, self.master.height() * 2 / 3)
+        self.vistaProblemaGrafo.setGeometry(150, self.master.height() / 3, self.master.width() / 2 - 150, self.master.height() * 2 / 3)
         
         # Crear un nuevo canvas y agregarlo al layout vertical
         self.canvas = PlotCanvas(self.centralWidget, width=50, height=40)
@@ -54,15 +55,18 @@ class EscenaProblema(QGraphicsScene):
         self.vPG_problemaLayout.addWidget(self.canvas)
         
     def dibujarGrafo(self, grafo):
-        pos = []
-        
-        # Dibujar el grafo en el canvas
-        pos = nx.spring_layout(grafo)
-        nx.draw(grafo, pos, ax=self.canvas.axes, with_labels=True, nodelist=pos, node_color='skyblue', edge_color='black', node_size=400)
+        """
+        Dibujar el grafo en el canvas
+        """
+        if self.pos == []:
+            self.pos = nx.spring_layout(grafo)
+        nx.draw(grafo, self.pos, ax=self.canvas.axes, with_labels=True, nodelist=self.pos, node_color='skyblue', edge_color='black', node_size=400)
         self.canvas.draw()
         
     def limpiarCanvas(self):
-        # Eliminar el gráfico existente si ya hay un canvas
+        """
+        Eliminar el gráfico existente si ya hay un canvas
+        """
         if self.canvas:
             self.vPG_problemaLayout.removeWidget(self.canvas)
             self.canvas.deleteLater()  # Eliminar el canvas antiguo
