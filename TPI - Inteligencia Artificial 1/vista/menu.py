@@ -167,6 +167,7 @@ class EscenaMenu(QGraphicsScene):
         
     def agregarEstado(self):
         self.master.agregarEstado(self.input_estado.text(), self.input_posicion_x.text(), self.input_posicion_y.text())
+        self.master.dibujarGrafo()
         
     def actualizarListaEstados(self, estadosParaLista):
         self.lista_estados.clear()

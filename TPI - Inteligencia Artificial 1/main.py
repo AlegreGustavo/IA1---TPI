@@ -107,7 +107,7 @@ class VentanaPrincipal(QMainWindow):
         blackPen.setWidth(5)    
         
         self.botonDibujarArbol = QPushButton('Dibujar Árbol', self)
-        self.botonDibujarArbol.setGeometry(15, 220, 100, 30)
+        self.botonDibujarArbol.setGeometry(15, 220, 100, 50)
         self.botonDibujarArbol.clicked.connect(self.dibujarGrafoCargado)
         
         self.heuristica_label = QLabel("Heurística:", self)
@@ -120,7 +120,8 @@ class VentanaPrincipal(QMainWindow):
         self.estadoFinal_label.setGeometry(15, 265, 200,50)
         
     def dibujarGrafoCargado(self):
-        #self.limpiarCanvas()
+        self.limpiarEscenas()
+        self.limpiarEstados()
         
         #PRUEBA EJERCICIO PRÁCTICO
         #Estados creados de forma estática para probar el Algoritmo
@@ -268,15 +269,20 @@ class VentanaPrincipal(QMainWindow):
         grafo = nx.Graph()
         for estado in self.estados:
             grafo.add_node(estado.nombre, h=estado.valor)
-            for relacion in estado.relaciones:
-                grafo.add_edge(estado.nombre, relacion.nombre)
+            # CONTROL: Si el estado no tiene relaciones.
+            if estado.relaciones != []:
+                for relacion in estado.relaciones:
+                    grafo.add_edge(estado.nombre, relacion.nombre)
 
         return grafo
     
     def construirGrafoEscaladaSimple(self):
         grafoEscaladaSimple = nx.Graph()
         solucionEscaladaSimple = self.escaladaSimple(self.estados)
-        posEscaladaSimple = self.construir_edges(solucionEscaladaSimple, grafoEscaladaSimple)
+        #CONTROL: Que la solucion del algoritmo Escalada Simple tenga más de un estado (si no tiene relaciones no debería por qué construir sus edges)
+        posEscaladaSimple = (0, 0)
+        if len(solucionEscaladaSimple) > 1:
+            posEscaladaSimple = self.construir_edges(solucionEscaladaSimple, grafoEscaladaSimple)
         self.grafoEscaladaSimple = grafoEscaladaSimple
         self.posEscaladaSimple = posEscaladaSimple
         self.nodosEscaladaSimple = list(self.grafoEscaladaSimple.nodes())
@@ -291,7 +297,10 @@ class VentanaPrincipal(QMainWindow):
     def construirGrafoMaximaPendiente(self):
         grafoMaximaPendiente = nx.Graph()
         solucionMaximaPendiente = self.maximaPendiente(self.estados)
-        posMaximaPendiente = self.construir_edges(solucionMaximaPendiente, grafoMaximaPendiente)
+        #CONTROL: Que la solucion del algoritmo Máxima Pendiente tenga más de un estado (si no tiene relaciones no debería por qué construir sus edges)
+        posMaximaPendiente = (0, 0)
+        if len(solucionMaximaPendiente) > 1:
+            posMaximaPendiente = self.construir_edges(solucionMaximaPendiente, grafoMaximaPendiente)
         self.grafoMaximaPendiente = grafoMaximaPendiente
         self.posMaximaPendiente = posMaximaPendiente
         self.nodosMaximaPendiente = list(self.grafoMaximaPendiente.nodes())
@@ -312,13 +321,20 @@ class VentanaPrincipal(QMainWindow):
     def dibujarEscenas(self, grafo, grafoEscaladaSimple, grafoMaximaPendiente, posEscaladaSimple, posMaximaPendiente):
         # Dibujar el grafo en el canvas
         self.escenaProblema.dibujarGrafo(grafo)
-        self.escenaEscaladaSimple.dibujarGrafo(grafoEscaladaSimple, posEscaladaSimple)
-        self.escenaMaximaPendiente.dibujarGrafo(grafoMaximaPendiente, posMaximaPendiente)  
+        if grafoEscaladaSimple and posEscaladaSimple and grafoMaximaPendiente and posMaximaPendiente != None:
+            self.escenaEscaladaSimple.dibujarGrafo(grafoEscaladaSimple, posEscaladaSimple)
+            self.escenaMaximaPendiente.dibujarGrafo(grafoMaximaPendiente, posMaximaPendiente)  
         
     def dibujarGrafo(self):
         grafo = self.construirGrafoProblema()
-        grafoEscaladaSimple, posEscaladaSimple = self.construirGrafoEscaladaSimple()
-        grafoMaximaPendiente, posMaximaPendiente = self.construirGrafoMaximaPendiente()
+        grafoEscaladaSimple = None
+        grafoMaximaPendiente = None
+        posEscaladaSimple = None
+        posMaximaPendiente = None
+        # CONTROL: si no hay estado inicial (¿Y tal vez final) no generará estas soluciones:
+        if self.estadoInicial != None:
+            grafoEscaladaSimple, posEscaladaSimple = self.construirGrafoEscaladaSimple()
+            grafoMaximaPendiente, posMaximaPendiente = self.construirGrafoMaximaPendiente()
         self.limpiarEscenas()
         self.dibujarEscenas(grafo, grafoEscaladaSimple, grafoMaximaPendiente, posEscaladaSimple, posMaximaPendiente)
         self.actualizarDatosProblema()
@@ -551,6 +567,24 @@ class VentanaPrincipal(QMainWindow):
         self.estadoFinal = None
         self.estados = []
         
+        #Variables de Escala Simple para el Paso a Paso
+        self.grafoEscaladaSimple = nx.Graph()  # Grafo vacío
+        self.posEscaladaSimple = {}  # Diccionario vacío
+        self.nodosEscaladaSimple = {}
+        self.indiceSimple = -1
+        
+        #Variables de Máxima Pendiente para el Paso a Paso
+        self.grafoMaximaPendiente = nx.Graph()  # Grafo vacío
+        self.posMaximaPendiente = {}  # Diccionario vacío
+        self.nodosMaximaPendiente = {}
+        self.indiceMaxima = -1
+        
+        #Variables para estado y nodo Final
+        self.estadoFinalSimple = None
+        self.nodoFinalSimple = None
+        self.estadoFinalMaxima = None
+        self.nodoFinalMaxima = None
+        
     def devolverRelaciones(self, nombreEstado):
         relaciones = []
         for estado in self.estados:
@@ -573,6 +607,7 @@ class VentanaPrincipal(QMainWindow):
         
     def dibujarGrafoAleatorio(self, cantidadEstados):
         self.limpiarEstados()
+        self.limpiarEscenas()
         estadoAgregar = None
         i = 0
         while i < cantidadEstados:
@@ -594,12 +629,16 @@ class VentanaPrincipal(QMainWindow):
            
             # Quitar las relaciones del estado de la listaEstadosAuxiliar:
             for relacion in estado.relaciones:
-                listaEstadosAuxiliar.remove(relacion)
-            relacionesEstado = random.randint(1, len(listaEstadosAuxiliar))
-            while len(estado.relaciones) < relacionesEstado:
-                posicionRandom = random.randint(0, len(listaEstadosAuxiliar)-1)
-                self.agregarRelacionNombre(listaEstadosAuxiliar[posicionRandom].nombre, estado.nombre)
-                listaEstadosAuxiliar.remove(listaEstadosAuxiliar[posicionRandom])
+                #CONTROL: solo verificar que no sea vacío:
+                if relacion != None:
+                    listaEstadosAuxiliar.remove(relacion)
+            # CONTROL: solo que la listaEstadosAuxiliar no sea 0
+            if len(listaEstadosAuxiliar) > 0:
+                relacionesEstado = random.randint(1, len(listaEstadosAuxiliar))
+                while len(estado.relaciones) < relacionesEstado:
+                    posicionRandom = random.randint(0, len(listaEstadosAuxiliar)-1)
+                    self.agregarRelacionNombre(listaEstadosAuxiliar[posicionRandom].nombre, estado.nombre)
+                    listaEstadosAuxiliar.remove(listaEstadosAuxiliar[posicionRandom])
         
         estadoInicialAleatorio = self.estados[random.randint(0, len(self.estados)-1)]
         self.establecerNodoInicial(estadoInicialAleatorio.nombre)
@@ -657,10 +696,14 @@ class VentanaPrincipal(QMainWindow):
         self.estadoFinal_label.setText("Estado Final: ")
         self.heuristica_list.clear()
         
-        self.estadoInicial_label.setText(self.estadoInicial_label.text() + self.estadoInicial.nombre)
-        self.estadoFinal_label.setText(self.estadoFinal_label.text() + self.estadoFinal.nombre)
+        # CONTROL: verificando que exista el estado inicial:
+        if self.estadoInicial != None:
+            self.estadoInicial_label.setText(self.estadoInicial_label.text() + self.estadoInicial.nombre)
+        if self.estadoFinal != None:
+            self.estadoFinal_label.setText(self.estadoFinal_label.text() + self.estadoFinal.nombre)
         for estado in self.estados:
-            self.heuristica_list.addItem(estado.nombre + ': ' + str(estado.valor))
+            if estado != None:
+                self.heuristica_list.addItem(estado.nombre + ': ' + str(estado.valor))
     
 # EJECUCIÓN DEL PROGRAMA:    
 if __name__ == "__main__":
