@@ -124,6 +124,12 @@ class VentanaPrincipal(QMainWindow):
         self.estadoFinal_label = QLabel("Estado Final: ", self)
         self.estadoFinal_label.setGeometry(15, 265, 200,50)
         
+        
+        # Botón de resolución:
+        self.botonDibujarArbol = QPushButton('RESOLVER', self)
+        self.botonDibujarArbol.setGeometry(150, 220, 100, 50)
+        self.botonDibujarArbol.clicked.connect(self.dibujarGrafoCargado)
+        
     def dibujarGrafoCargado(self):
         self.limpiarEscenas()
         self.limpiarEstados()
