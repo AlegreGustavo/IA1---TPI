@@ -166,8 +166,12 @@ class EscenaMenu(QGraphicsScene):
         self.setGui()
         
     def agregarEstado(self):
-        self.master.agregarEstado(self.input_estado.text(), self.input_posicion_x.text(), self.input_posicion_y.text())
-        self.master.dibujarGrafo()
+        nombreEstado = self.input_estado.text()
+        if self.master.existeNombreEstado(nombreEstado):
+            self.master.mostrarAlerta("El nombre del Estado ya existe. Por favor elige uno nuevo.")
+        else:
+            self.master.agregarEstado(nombreEstado, self.input_posicion_x.text(), self.input_posicion_y.text())
+            self.master.dibujarGrafo()
         
     def actualizarListaEstados(self, estadosParaLista):
         self.lista_estados.clear()
@@ -180,8 +184,16 @@ class EscenaMenu(QGraphicsScene):
             self.conoce_a_comboBox.addItem(estado.nombre)
             
     def dibujarGrafoAleatorio(self):
-        cantidadEstados = int(self.cantidadEstados_input.text())
-        self.master.dibujarGrafoAleatorio(cantidadEstados)
+        cantidadEstados = self.cantidadEstados_input.text()
+        # CONTROL: que la cantidad ingresada sea un número.
+        if not cantidadEstados.isalnum():
+            self.master.mostrarAlerta("La cantidad de Estados ingresada no es correcta. Por favor ingrese un número.")
+        else:
+            # CONTROL: que la cantidad ingresada sea mayor a cero.
+            if int(cantidadEstados) == 0:
+                self.master.mostrarAlerta("Por favor ingrese un número mayor a cero.")
+            else:
+                self.master.dibujarGrafoAleatorio(int(cantidadEstados))
         
     def actualizarListaConoceA(self):
         self.conoce_a_list.clear()

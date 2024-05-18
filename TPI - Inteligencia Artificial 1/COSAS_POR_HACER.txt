@@ -1,10 +1,7 @@
-Cosas pendiente (sin orden en específico):
+COSAS PENDIENTE (sin orden en específico):
 
 * Heurísticas y aplicarlas (Euclideana y Manhattan)
 * Lábeles de las heurísticas en los gráficos.
-* Control de errores. Hay que hacer controles en varios lugares.
-    > Graficar sin tener un nodo inicial y final da error.
-    > Antes de resolver el grafo (Escalada Simple y Máxima Pendiente) debería haber un nodo inicial y final.
 
 * Ver que lo de las relaciones anden. <--- POR AHORA ME PARECE QUE ANDA. (Tal vez controlar que estén elegidos 2 estados para que deje agregar/quitar relaciones).
 
@@ -18,9 +15,15 @@ Cosas pendiente (sin orden en específico):
 
 // Te re aprecio Juliiiii. Porfa seguí así, no cambies. :D
 
+HECHO/CORREGIDO:
+* Control de errores. Hay que hacer controles en varios lugares.
+    > Graficar sin tener un nodo inicial y final da error.
+    > Antes de resolver el grafo (Escalada Simple y Máxima Pendiente) debería haber un nodo inicial y final.
+* Agregar Estados y que los grafique sin tener relaciones, y sin tener nodos inicial y final
+    > Árboles con 1 o 2 nodos.
+
 VIENDO POR AHORA:
 FABIX:
     - La generación del árbol aleatorio. <--- Viendo por ahora. Voy a hacer que el árbol se genere solo ingresando la cantidad de estados. las relaciones serán aleatorias (sino me complico al pp. En todo caso después le amplío)
+        - Mepa que hay un bucle infinito por ahí. Pero todavía no lo encontré.
 
-    - Agregar Estados y que los grafique sin tener relaciones, y sin tener nodos inicial y final
-        - Árboles con 1 o 2 nodos.

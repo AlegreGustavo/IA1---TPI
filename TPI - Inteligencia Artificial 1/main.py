@@ -8,6 +8,7 @@
 
 import sys
 import random
+import math
 
 from constantes import *
 
@@ -29,6 +30,7 @@ from vista.menu import *
 from vista.problema import *
 from vista.EscaladaSimple import *
 from vista.MaximaPendiente import *
+from vista.mensajeAlerta import *
 
 from Estado import *
 
@@ -84,6 +86,9 @@ class VentanaPrincipal(QMainWindow):
         ########################################
         self.escenaEscaladaSimple = EscaladaSimple(self)
         self.escenaMaximaPendiente = MaximaPendiente(self)
+        
+        #Mensaje de alerta:
+        self.ventanaAlerta = MensajeAlerta()
         
         self.setGui()
         
@@ -314,6 +319,7 @@ class VentanaPrincipal(QMainWindow):
     
     def limpiarEscenas(self):
         #Limpiar canvas de las escenas:
+        plt.close()
         self.escenaProblema.limpiarCanvas()
         self.escenaEscaladaSimple.limpiarCanvas()
         self.escenaMaximaPendiente.limpiarCanvas()
@@ -526,8 +532,8 @@ class VentanaPrincipal(QMainWindow):
         return separador
         
     def agregarEstado(self, nombre, x, y):
-        valor = 0
         #valor = self.calcularDistancia(x, y, estadoFinal.x, estadoFinal.y, metodoLinealManhattan)
+        valor = random.randint(1, 99)
         pos = (x, y)
         estadoNuevo = Estado(nombre, valor, pos)
         self.estados.append(estadoNuevo)
@@ -536,6 +542,42 @@ class VentanaPrincipal(QMainWindow):
         self.escenaMenu.actualizarListaEstados(self.estados)
         #Actualización de los estados en el combobox de relaciones:
         self.escenaMenu.actualizarComboRelaciones(self.estados)
+        
+    def calcularDistanciaEuclidea(a, b):
+        """
+        Args:
+            a (int): punto a
+            b (int): punto b
+
+        Returns:
+            int: el valor de la distancia Euclídea entre los puntos pasados.
+        """
+        # Desempaquetamos las coordenadas de los puntos a y b
+        x1, y1 = a
+        x2, y2 = b
+        
+        # Calculamos la distancia Euclídea
+        distanciaEuclidea = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        
+        return distanciaEuclidea
+    
+    def calcularDistanciaManhattan(a, b):
+        """
+        Args:
+            a (int): punto a
+            b (int): punto b
+
+        Returns:
+            int: el valor de la distancia Manhattan entre los puntos pasados.
+        """
+        # Desempaquetamos las coordenadas de los puntos a y b
+        x1, y1 = a
+        x2, y2 = b
+        
+        # Calculamos la distancia Euclídea
+        distanciaManhattan = abs(x2 - x1) + abs(y2 - y1)
+        
+        return distanciaManhattan 
     
     def establecerNodoInicial(self, nombreEstadoInicial):
         """
@@ -612,6 +654,7 @@ class VentanaPrincipal(QMainWindow):
         i = 0
         while i < cantidadEstados:
             noRepetido = True
+            # CONTROL: se me hace que acá hay un bucle infinito a veces. Quién sabe.
             while noRepetido:
                 nombre = chr(random.randint(65, 90))    # Genera una letra aleatoria en mayúscula
                 noRepetido = self.existeNombreEstado(nombre)
@@ -704,6 +747,9 @@ class VentanaPrincipal(QMainWindow):
         for estado in self.estados:
             if estado != None:
                 self.heuristica_list.addItem(estado.nombre + ': ' + str(estado.valor))
+                
+    def mostrarAlerta(self, mensaje):
+        self.ventanaAlerta.mostrarAlerta(mensaje)
     
 # EJECUCIÓN DEL PROGRAMA:    
 if __name__ == "__main__":
