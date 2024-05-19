@@ -724,6 +724,14 @@ class VentanaPrincipal(QMainWindow):
             if estado.nombre == nombre:
                 estado.quitarRelacion(relacion)
                 relacion.quitarRelacion(estado)
+    
+    def borrarEstadoNombre(self, nombreEstado):
+        estadoEncontrado = None
+        for estado in self.estados:
+            if estado.nombre == nombreEstado:
+                estadoEncontrado = estado
+                break
+        estadoEncontrado.borrarEstado(self.estados)
                 
     def actualizarDatosProblema(self):
         self.estadoInicial_label.setText("Estado Inicial: ")

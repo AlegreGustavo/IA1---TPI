@@ -67,11 +67,14 @@ class EscenaMenu(QGraphicsScene):
         self.listaEstados_esFinal_CheckBox = QCheckBox("¿Es el Estado Final?")
         self.listaEstados_esInicial_CheckBox.clicked.connect(self.establecerNodoInicial)
         self.listaEstados_esFinal_CheckBox.clicked.connect(self.establecerNodoFinal)
+        self.btnConoceA_borrorEstado = QPushButton("Borrar Estado")
+        self.btnConoceA_borrorEstado.clicked.connect(self.borrarEstado)
         
         lista_estados_layout.addWidget(self.listaEstados_label)
         lista_estados_layout.addWidget(self.lista_estados)
         lista_estados_layout.addWidget(self.listaEstados_esInicial_CheckBox)
         lista_estados_layout.addWidget(self.listaEstados_esFinal_CheckBox)
+        lista_estados_layout.addWidget(self.btnConoceA_borrorEstado)
 
         # Sección "Conoce a:"
         conoce_a_layout = QVBoxLayout()
@@ -223,7 +226,18 @@ class EscenaMenu(QGraphicsScene):
         nombreEstado = self.lista_estados.currentItem().text()
         nombreRelacionQuitar = self.conoce_a_list.currentItem().text()
         self.master.quitarRelacionNombre(nombreEstado, nombreRelacionQuitar)
+        # Actualizar tanto la lista como el combobox:
+        self.actualizarListaConoceA()
+        # Redibujar los grafos:
+        self.master.dibujarGrafo()
         
+    def borrarEstado(self):
+        nombreEstado = self.lista_estados.currentItem().text()
+        self.master.borrarEstadoNombre(nombreEstado)
+        #Actualiza Lista de Estados:
+        item = self.lista_estados.findItems(nombreEstado, Qt.MatchExactly)[0]
+        if item is not None:
+            self.lista_estados.takeItem(self.lista_estados.row(item))
         # Actualizar tanto la lista como el combobox:
         self.actualizarListaConoceA()
         # Redibujar los grafos:
