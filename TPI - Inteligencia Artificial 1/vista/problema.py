@@ -70,7 +70,7 @@ class EscenaProblema(QGraphicsScene):
         if self.canvas:
             self.vPG_problemaLayout.removeWidget(self.canvas)
             self.canvas.deleteLater()  # Eliminar el canvas antiguo
-            self.pos = []
+            #self.pos = []
 
         # Crear un nuevo canvas y agregarlo al layout vertical
         self.canvas = PlotCanvas(self.centralWidget, width=4, height=3)
