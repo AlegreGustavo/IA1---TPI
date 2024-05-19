@@ -22,8 +22,12 @@ import networkx as nx
 import random
 
 #Para dibujar los grafos:
+#import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+
 from plotCanvas import *
 
 from vista.menu import *
@@ -364,42 +368,6 @@ class VentanaPrincipal(QMainWindow):
         if self.indiceMaxima < len(self.nodosMaximaPendiente) - 1:
             self.indiceMaxima += 1
             self.escenaMaximaPendiente.visualizacion_arbol_paso_a_paso(self.grafoMaximaPendiente, self.nodosMaximaPendiente, self.indiceMaxima, self.posMaximaPendiente, self.nodoFinalMaxima, self.estado_menor_valor_maxima)
-    
-    def dibujarGrafoBacup_borrar(self):
-        grafo = nx.Graph()
-        grafoEscaladaSimple = nx.Graph()
-        grafoMaximaPendiente = nx.Graph()
-        posEscaladaSimple = []
-        posMaximaPendiente = []
-        
-        for estado in self.estados:
-            grafo.add_node(estado.nombre, h=estado.valor, node_color=estado.color)
-            for relacion in estado.relaciones:
-                grafo.add_edge(estado.nombre, relacion.nombre)
-   
-        solucionEscaladaSimple = self.escaladaSimple(self.estados)
-        for estado in solucionEscaladaSimple:
-            grafoEscaladaSimple.add_node(estado.nombre, h=estado.valor)
-            for relacion in estado.relaciones:
-                grafoEscaladaSimple.add_edge(estado.nombre, relacion.nombre)
-        posEscaladaSimple = self.construir_edges(solucionEscaladaSimple, grafoEscaladaSimple)
-        
-        solucionMaximaPendiente = self.maximaPendiente(self.estados)
-        for estado in solucionMaximaPendiente:
-            grafoMaximaPendiente.add_node(estado.nombre, h=estado.valor)
-            for relacion in estado.relaciones:
-                grafoMaximaPendiente.add_edge(estado.nombre, relacion.nombre)
-        posMaximaPendiente = self.construir_edges(solucionMaximaPendiente, grafoMaximaPendiente)
-        
-        #Limpiar canvas de las escenas:
-        self.escenaProblema.limpiarCanvas()
-        self.escenaEscaladaSimple.limpiarCanvas()
-        self.escenaMaximaPendiente.limpiarCanvas()
-        
-        # Dibujar el grafo en el canvas
-        self.escenaProblema.dibujarGrafo(grafo)
-        self.escenaEscaladaSimple.dibujarGrafo(grafoEscaladaSimple, posEscaladaSimple)
-        self.escenaMaximaPendiente.dibujarGrafo(grafoMaximaPendiente, posMaximaPendiente)
 
     #ESCALADA SIMPLE:
     def escaladaSimple(self, estadosBuscar):
@@ -543,7 +511,8 @@ class VentanaPrincipal(QMainWindow):
         
     def agregarEstado(self, nombre, x, y):
         #valor = self.calcularDistancia(x, y, estadoFinal.x, estadoFinal.y, metodoLinealManhattan)
-        valor = random.randint(1, 99)
+        #valor = random.randint(1, 99)
+        valor = self.calcularHeuristica((x, y))
         pos = (x, y)
         estadoNuevo = Estado(nombre, valor, pos)
         self.estados.append(estadoNuevo)
@@ -552,6 +521,17 @@ class VentanaPrincipal(QMainWindow):
         self.escenaMenu.actualizarListaEstados(self.estados)
         #Actualización de los estados en el combobox de relaciones:
         self.escenaMenu.actualizarComboRelaciones(self.estados)
+        
+    def calcularHeuristica(self, a):
+        valor = 0
+        heuristica = self.escenaMenu.heuristicaUsada()
+        if self.estadoFinal != None:
+            if heuristica == "Euclidea":
+                valor = self.calcularDistanciaEuclidea(a, self.estadoFinal.posicion)
+            if heuristica == "Manhattan":
+                valor = self.calcularDistanciaManhattan(a, self.estadoFinal.posicion)
+            
+        return valor
         
     def calcularDistanciaEuclidea(a, b):
         """

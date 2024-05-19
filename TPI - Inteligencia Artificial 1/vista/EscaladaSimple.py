@@ -81,7 +81,7 @@ class EscaladaSimple(QGraphicsScene):
         pos = dict(list(posEscaladaSimple.items())[:i+1])
         
         # Diccionario para asignar colores a los nodos
-        colores = ['yellow' if nodo == next(iter(subgrafo.nodes())) else 'skyblue' for nodo in subgrafo.nodes()]
+        colores = ['yellow' if node == next(iter(subgrafo.nodes())) else 'skyblue' for node in subgrafo.nodes()]
         
         # Si el nodoFinal no es igual al último nodo del subgrafo y el grafo es igual al grafoEscaladaSimple, el último nodo del subgrafo será ROJO
         if nodoFinal != list(grafoEscaladaSimple.nodes())[-1] and nx.is_isomorphic(subgrafo, grafoEscaladaSimple):
@@ -119,6 +119,8 @@ class EscaladaSimple(QGraphicsScene):
         plt.title("Escalada Simple (Paso {})".format(i+1))
         
         self.canvas.draw()
+        
+        plt.close(self.canvas.fig)  # Cerrar la figura después de dibujarla
         
     def limpiarCanvas(self):
         # Eliminar el gráfico existente si ya hay un canvas

@@ -79,7 +79,7 @@ class MaximaPendiente(QGraphicsScene):
         pos = dict(list(posMaximaPendiete.items())[:i+1])
         
         # Diccionario para asignar colores a los nodos
-        colores = ['yellow' if nodo == next(iter(subgrafo.nodes())) else 'skyblue' for nodo in subgrafo.nodes()]
+        colores = ['yellow' if node == next(iter(subgrafo.nodes())) else 'skyblue' for node in subgrafo.nodes()]
         
         # Si el nodoFinal no es igual al último nodo del grafo y el subgrafo es igual al grafoEscaladaSimple, el último nodo del subgrafo será ROJO
         if nodoFinal != list(grafoMaximaPendiente.nodes())[-1] and nx.is_isomorphic(subgrafo, grafoMaximaPendiente):
@@ -116,6 +116,8 @@ class MaximaPendiente(QGraphicsScene):
         nx.draw(subgrafo, pos, ax=self.canvas.axes, with_labels=True, nodelist=pos, node_color=colores, edge_color='black', node_size=500)
         plt.title("Máxima Pendiente (Paso {})".format(i+1))
         self.canvas.draw()
+        
+        plt.close(self.canvas.fig)  # Cerrar la figura después de dibujarla
         
     def limpiarCanvas(self):
         # Eliminar el gráfico existente si ya hay un canvas

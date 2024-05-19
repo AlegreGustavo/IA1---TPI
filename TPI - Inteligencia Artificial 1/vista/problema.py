@@ -60,8 +60,10 @@ class EscenaProblema(QGraphicsScene):
         """
         if self.pos == []:
             self.pos = nx.spring_layout(grafo)
+        self.canvas.axes.clear()  # Limpiar el eje antes de dibujar
         nx.draw(grafo, self.pos, ax=self.canvas.axes, with_labels=True, nodelist=self.pos, node_color='skyblue', edge_color='black', node_size=400)
         self.canvas.draw()
+        plt.close(self.canvas.fig)  # Cerrar la figura después de dibujarla
         
     def limpiarCanvas(self):
         """
@@ -70,7 +72,7 @@ class EscenaProblema(QGraphicsScene):
         if self.canvas:
             self.vPG_problemaLayout.removeWidget(self.canvas)
             self.canvas.deleteLater()  # Eliminar el canvas antiguo
-            #self.pos = []
+            self.pos = []
 
         # Crear un nuevo canvas y agregarlo al layout vertical
         self.canvas = PlotCanvas(self.centralWidget, width=4, height=3)
