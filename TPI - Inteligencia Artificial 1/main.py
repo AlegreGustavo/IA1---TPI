@@ -552,6 +552,7 @@ class VentanaPrincipal(QMainWindow):
         return distanciaEuclidea
     
     def calcularDistanciaManhattan(a, b):
+        
         """
         Args:
             a (int): punto a
