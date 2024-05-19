@@ -55,12 +55,14 @@ class VentanaPrincipal(QMainWindow):
         self.grafoEscaladaSimple = nx.Graph()  # Grafo vacío
         self.posEscaladaSimple = {}  # Diccionario vacío
         self.nodosEscaladaSimple = {}
+        self.estado_menor_valor_simple = None
         self.indiceSimple = -1
         
         #Variables de Máxima Pendiente para el Paso a Paso
         self.grafoMaximaPendiente = nx.Graph()  # Grafo vacío
         self.posMaximaPendiente = {}  # Diccionario vacío
         self.nodosMaximaPendiente = {}
+        self.estado_menor_valor_maxima = None
         self.indiceMaxima = -1
         
         #Variables para estado y nodo Final
@@ -301,6 +303,7 @@ class VentanaPrincipal(QMainWindow):
         self.grafoEscaladaSimple = grafoEscaladaSimple
         self.posEscaladaSimple = posEscaladaSimple
         self.nodosEscaladaSimple = list(self.grafoEscaladaSimple.nodes())
+        self.estado_menor_valor_simple = min(solucionEscaladaSimple, key=lambda estado: estado.valor)
         self.indiceSimple = -1
         
         #Para agregar colores al paso a paso
@@ -319,6 +322,7 @@ class VentanaPrincipal(QMainWindow):
         self.grafoMaximaPendiente = grafoMaximaPendiente
         self.posMaximaPendiente = posMaximaPendiente
         self.nodosMaximaPendiente = list(self.grafoMaximaPendiente.nodes())
+        self.estado_menor_valor_maxima = min(solucionMaximaPendiente, key=lambda estado: estado.valor)
         self.indiceMaxima = -1
         
         #Para agregar colores al paso a paso
@@ -358,12 +362,12 @@ class VentanaPrincipal(QMainWindow):
     def siguiente_paso_simple(self):
         if self.indiceSimple < len(self.nodosEscaladaSimple) - 1:
             self.indiceSimple += 1
-            self.escenaEscaladaSimple.visualizacion_arbol_paso_a_paso(self.grafoEscaladaSimple, self.nodosEscaladaSimple, self.indiceSimple, self.posEscaladaSimple, self.nodoFinalSimple)
+            self.escenaEscaladaSimple.visualizacion_arbol_paso_a_paso(self.grafoEscaladaSimple, self.nodosEscaladaSimple, self.indiceSimple, self.posEscaladaSimple, self.nodoFinalSimple, self.estado_menor_valor_simple)
     
     def siguiente_paso_maxima(self):
         if self.indiceMaxima < len(self.nodosMaximaPendiente) - 1:
             self.indiceMaxima += 1
-            self.escenaMaximaPendiente.visualizacion_arbol_paso_a_paso(self.grafoMaximaPendiente, self.nodosMaximaPendiente, self.indiceMaxima, self.posMaximaPendiente, self.nodoFinalMaxima)
+            self.escenaMaximaPendiente.visualizacion_arbol_paso_a_paso(self.grafoMaximaPendiente, self.nodosMaximaPendiente, self.indiceMaxima, self.posMaximaPendiente, self.nodoFinalMaxima, self.estado_menor_valor_maxima)
 
     #ESCALADA SIMPLE:
     def escaladaSimple(self, estadosBuscar):
