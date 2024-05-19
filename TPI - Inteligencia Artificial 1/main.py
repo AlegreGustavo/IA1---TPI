@@ -134,7 +134,7 @@ class VentanaPrincipal(QMainWindow):
         # Botón de resolución:
         self.botonDibujarArbol = QPushButton('RESOLVER', self)
         self.botonDibujarArbol.setGeometry(150, 220, 100, 50)
-        self.botonDibujarArbol.clicked.connect(self.dibujarGrafoCargado)
+        self.botonDibujarArbol.clicked.connect(self.resolverProblema)
         
     def dibujarGrafoCargado(self):
         self.limpiarEscenas()
@@ -742,6 +742,12 @@ class VentanaPrincipal(QMainWindow):
     def mostrarAlerta(self, mensaje):
         self.ventanaAlerta.mostrarAlerta(mensaje)
     
+    def resolverProblema(self):
+        for estado in self.estados:
+            estado.valor = self.calcularHeuristica(estado.posicion)
+        self.actualizarDatosProblema()
+        self.dibujarGrafo()
+
 # EJECUCIÓN DEL PROGRAMA:    
 if __name__ == "__main__":
     app = QApplication(sys.argv)
