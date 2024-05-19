@@ -97,8 +97,8 @@ class EscenaMenu(QGraphicsScene):
         
         # ComboBox de la sección "Definir Heurística:"
         self.definirHeuristica_comboBox = QComboBox()
-        self.definirHeuristica_comboBox.addItem("Distancia Línea Recta")
-        self.definirHeuristica_comboBox.addItem("Distancia Manhatan")
+        self.definirHeuristica_comboBox.addItem("Euclidea")
+        self.definirHeuristica_comboBox.addItem("Manhhatan")
         definir_heuristica_layout.addWidget(self.heuristica_label)
         definir_heuristica_layout.addWidget(self.definirHeuristica_comboBox)
 
@@ -167,11 +167,14 @@ class EscenaMenu(QGraphicsScene):
         
     def agregarEstado(self):
         nombreEstado = self.input_estado.text()
-        if self.master.existeNombreEstado(nombreEstado):
-            self.master.mostrarAlerta("El nombre del Estado ya existe. Por favor elige uno nuevo.")
-        else:
-            self.master.agregarEstado(nombreEstado, self.input_posicion_x.text(), self.input_posicion_y.text())
-            self.master.dibujarGrafo()
+        if nombreEstado == "":
+            self.master.mostrarAlerta("Ingrese un nombre para el Estado, por favor")
+        else:    
+            if self.master.existeNombreEstado(nombreEstado):
+                self.master.mostrarAlerta("El nombre del Estado ya existe. Por favor elige uno nuevo.")
+            else:
+                self.master.agregarEstado(nombreEstado, self.input_posicion_x.text(), self.input_posicion_y.text())
+                self.master.dibujarGrafo()
         
     def actualizarListaEstados(self, estadosParaLista):
         self.lista_estados.clear()
@@ -223,6 +226,10 @@ class EscenaMenu(QGraphicsScene):
         self.actualizarListaConoceA()
         # Redibujar los grafos:
         self.master.dibujarGrafo()
+            
+    def heuristicaUsada(self):
+        heuristica = self.definirHeuristica_comboBox.currentText()
+        return heuristica
             
     @property
     def master(self):

@@ -1,6 +1,5 @@
 COSAS PENDIENTE (sin orden en específico):
 
-* Heurísticas y aplicarlas (Euclideana y Manhattan)
 * Lábeles de las heurísticas en los gráficos.
 
 * Ver que lo de las relaciones anden. <--- POR AHORA ME PARECE QUE ANDA. (Tal vez controlar que estén elegidos 2 estados para que deje agregar/quitar relaciones).
@@ -21,6 +20,7 @@ HECHO/CORREGIDO:
     > Antes de resolver el grafo (Escalada Simple y Máxima Pendiente) debería haber un nodo inicial y final.
 * Agregar Estados y que los grafique sin tener relaciones, y sin tener nodos inicial y final
     > Árboles con 1 o 2 nodos.
+* Heurísticas y aplicarlas (Euclideana y Manhattan)
 
 VIENDO POR AHORA:
 FABIX:

@@ -104,6 +104,8 @@ class MaximaPendiente(QGraphicsScene):
         plt.title("Máxima Pendiente (Paso {})".format(i+1))
         self.canvas.draw()
         
+        plt.close(self.canvas.fig)  # Cerrar la figura después de dibujarla
+        
     def limpiarCanvas(self):
         # Eliminar el gráfico existente si ya hay un canvas
         if self.canvas:

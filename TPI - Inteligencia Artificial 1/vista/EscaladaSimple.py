@@ -107,6 +107,8 @@ class EscaladaSimple(QGraphicsScene):
         
         self.canvas.draw()
         
+        plt.close(self.canvas.fig)  # Cerrar la figura después de dibujarla
+        
     def limpiarCanvas(self):
         # Eliminar el gráfico existente si ya hay un canvas
         if self.canvas:
