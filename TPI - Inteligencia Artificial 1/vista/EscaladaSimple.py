@@ -93,15 +93,19 @@ class EscaladaSimple(QGraphicsScene):
             for nodo, posicion in pos.items():
                 if nodo == estado_menor_valor.nombre:
                     posicion_minimo_local = posicion
-                    indice_minimo_local += 1
                     colores[indice_minimo_local] = 'red'
                     break  # Salir del bucle una vez que se encuentre la primera coincidencia
-            
+                indice_minimo_local += 1
+                
             # Si se encontró estado_menor_valor en el diccionario pos
             if posicion_minimo_local is not None:
                 # Usar las coordenadas encontradas en posicion_minimo_local
                 x_pos = posicion_minimo_local[0]
-                y_pos = posicion_minimo_local[1] - 0.40
+                y_pos = posicion_minimo_local[1] - 0.35
+                
+                if (min(pos.values(), key=lambda x: x[1])[1])>y_pos:
+                    y_pos = min(pos.values(), key=lambda x: x[1])[1] - 0.15
+                    
                 # Agregar anotación
                 plt.text(x_pos, y_pos, "Mínimo Local", fontsize=8, fontweight='bold', ha='center', va='center', bbox=dict(facecolor='white', edgecolor='white', pad=1))
     

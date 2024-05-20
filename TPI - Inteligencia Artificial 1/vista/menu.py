@@ -1,6 +1,6 @@
 import sys
 import random
-from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QGraphicsScene, QGraphicsView, QGraphicsItem, QWidget, QLineEdit, QListWidget, QComboBox, QRadioButton
+from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QGraphicsScene, QGraphicsView, QGraphicsItem, QWidget, QLineEdit, QListWidget, QComboBox, QRadioButton, QCheckBox
 from PySide6.QtGui import QPainter, QColor, QPen, QBrush
 from PySide6.QtCore import Qt, QPoint
 
@@ -63,13 +63,18 @@ class EscenaMenu(QGraphicsScene):
         self.lista_estados.clicked.connect(self.actualizarListaConoceA)
         
         # RadioButtons de la sección "Lista Estados"
-        self.listaEstados_esInicial_radioButton = QRadioButton("¿Es el Estado Inicial?")
-        self.listaEstados_esFinal_radioButton = QRadioButton("¿Es el Estado Final?")
+        self.listaEstados_esInicial_CheckBox = QCheckBox("¿Es el Estado Inicial?")
+        self.listaEstados_esFinal_CheckBox = QCheckBox("¿Es el Estado Final?")
+        self.listaEstados_esInicial_CheckBox.clicked.connect(self.establecerNodoInicial)
+        self.listaEstados_esFinal_CheckBox.clicked.connect(self.establecerNodoFinal)
+        self.btnConoceA_borrorEstado = QPushButton("Borrar Estado")
+        self.btnConoceA_borrorEstado.clicked.connect(self.borrarEstado)
         
         lista_estados_layout.addWidget(self.listaEstados_label)
         lista_estados_layout.addWidget(self.lista_estados)
-        lista_estados_layout.addWidget(self.listaEstados_esInicial_radioButton)
-        lista_estados_layout.addWidget(self.listaEstados_esFinal_radioButton)
+        lista_estados_layout.addWidget(self.listaEstados_esInicial_CheckBox)
+        lista_estados_layout.addWidget(self.listaEstados_esFinal_CheckBox)
+        lista_estados_layout.addWidget(self.btnConoceA_borrorEstado)
 
         # Sección "Conoce a:"
         conoce_a_layout = QVBoxLayout()
@@ -207,6 +212,17 @@ class EscenaMenu(QGraphicsScene):
         noConoce = self.master.devolverRelacionesNoConoce(self.lista_estados.currentItem().text())
         self.actualizarComboRelaciones(noConoce)
         
+    def actualizarBoxesInicialFinal(self, estadoSeleccionado):
+        estadoInicial, estadoFinal = self.master.devolverInicialFinal()
+        if estadoInicial == estadoSeleccionado:
+            self.listaEstados_esInicial_CheckBox.setChecked(True)
+        else:
+            self.listaEstados_esInicial_CheckBox.setChecked(False)
+        if estadoFinal == estadoSeleccionado:
+            self.listaEstados_esFinal_CheckBox.setChecked(True)
+        else:
+            self.listaEstados_esFinal_CheckBox.setChecked(False)
+        
     def agregarRelacion(self):
         nombreEstado = self.lista_estados.currentItem().text()
         nombreRelacionAgregar = self.conoce_a_comboBox.currentText()
@@ -221,7 +237,18 @@ class EscenaMenu(QGraphicsScene):
         nombreEstado = self.lista_estados.currentItem().text()
         nombreRelacionQuitar = self.conoce_a_list.currentItem().text()
         self.master.quitarRelacionNombre(nombreEstado, nombreRelacionQuitar)
+        # Actualizar tanto la lista como el combobox:
+        self.actualizarListaConoceA()
+        # Redibujar los grafos:
+        self.master.dibujarGrafo()
         
+    def borrarEstado(self):
+        nombreEstado = self.lista_estados.currentItem().text()
+        self.master.borrarEstadoNombre(nombreEstado)
+        #Actualiza Lista de Estados:
+        item = self.lista_estados.findItems(nombreEstado, Qt.MatchExactly)[0]
+        if item is not None:
+            self.lista_estados.takeItem(self.lista_estados.row(item))
         # Actualizar tanto la lista como el combobox:
         self.actualizarListaConoceA()
         # Redibujar los grafos:
@@ -230,6 +257,26 @@ class EscenaMenu(QGraphicsScene):
     def heuristicaUsada(self):
         heuristica = self.definirHeuristica_comboBox.currentText()
         return heuristica
+    
+    def establecerNodoInicial(self):
+        if self.lista_estados.currentItem() != None:
+            nombre_estado = self.lista_estados.currentItem().text()
+            if self.listaEstados_esInicial_CheckBox.isChecked():
+                self.master.establecerNodoInicial(nombre_estado)
+            else:
+                self.master.quitarEstadoInicial()
+        else:
+            self.master.mostrarAlerta("Seleccione un estado por favor.")
+    
+    def establecerNodoFinal(self):
+        if self.lista_estados.currentItem() != None:
+            nombre_estado = self.lista_estados.currentItem().text()
+            if self.listaEstados_esFinal_CheckBox.isChecked():
+                self.master.establecerNodoFinal(nombre_estado)
+            else:
+                self.master.quitarEstadoFinal()
+        else:
+            self.master.mostrarAlerta("Seleccione un estado por favor.")
             
     @property
     def master(self):
