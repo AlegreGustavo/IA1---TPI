@@ -134,7 +134,7 @@ class VentanaPrincipal(QMainWindow):
         # Botón de resolución:
         self.botonDibujarArbol = QPushButton('RESOLVER', self)
         self.botonDibujarArbol.setGeometry(150, 220, 100, 50)
-        self.botonDibujarArbol.clicked.connect(self.dibujarGrafoCargado)
+        self.botonDibujarArbol.clicked.connect(self.resolverProblema)
         
     def dibujarGrafoCargado(self):
         self.limpiarEscenas()
@@ -533,7 +533,7 @@ class VentanaPrincipal(QMainWindow):
             
         return valor
         
-    def calcularDistanciaEuclidea(a, b):
+    def calcularDistanciaEuclidea(self, a, b):
         """
         Args:
             a (int): punto a
@@ -547,11 +547,11 @@ class VentanaPrincipal(QMainWindow):
         x2, y2 = b
         
         # Calculamos la distancia Euclídea
-        distanciaEuclidea = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        distanciaEuclidea = math.sqrt((int(x2) - int(x1)) ** 2 + (int(y2) - int(y1)) ** 2)
         
         return distanciaEuclidea
     
-    def calcularDistanciaManhattan(a, b):
+    def calcularDistanciaManhattan(self, a, b):
         
         """
         Args:
@@ -566,7 +566,7 @@ class VentanaPrincipal(QMainWindow):
         x2, y2 = b
         
         # Calculamos la distancia Euclídea
-        distanciaManhattan = abs(x2 - x1) + abs(y2 - y1)
+        distanciaManhattan = abs(int(x2) - int(x1)) + abs(int(y2) - int(y1))
         
         return distanciaManhattan 
     
@@ -724,6 +724,14 @@ class VentanaPrincipal(QMainWindow):
             if estado.nombre == nombre:
                 estado.quitarRelacion(relacion)
                 relacion.quitarRelacion(estado)
+    
+    def borrarEstadoNombre(self, nombreEstado):
+        estadoEncontrado = None
+        for estado in self.estados:
+            if estado.nombre == nombreEstado:
+                estadoEncontrado = estado
+                break
+        estadoEncontrado.borrarEstado(self.estados)
                 
     def actualizarDatosProblema(self):
         self.estadoInicial_label.setText("Estado Inicial: ")
@@ -742,6 +750,12 @@ class VentanaPrincipal(QMainWindow):
     def mostrarAlerta(self, mensaje):
         self.ventanaAlerta.mostrarAlerta(mensaje)
     
+    def resolverProblema(self):
+        for estado in self.estados:
+            estado.valor = self.calcularHeuristica(estado.posicion)
+        self.actualizarDatosProblema()
+        self.dibujarGrafo()
+
 # EJECUCIÓN DEL PROGRAMA:    
 if __name__ == "__main__":
     app = QApplication(sys.argv)

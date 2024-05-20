@@ -83,3 +83,16 @@ class Estado:
         salida = self.__nombre
     
         return salida
+    
+    def borrarEstado(self, estados):
+        """
+        Método para borrar este estado de la lista de estados proporcionada y de las relaciones de otros estados.
+        """
+        # Eliminar este estado de las relaciones de otros estados
+        for estado in estados:
+            if self in estado.relaciones:
+                estado.quitarRelacion(self)
+        
+        # Eliminar este estado de la lista de estados proporcionada
+        estados.remove(self)
+        # Realizar limpieza adicional si es necesario
