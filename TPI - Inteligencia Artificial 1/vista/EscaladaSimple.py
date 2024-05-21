@@ -138,12 +138,12 @@ class EscaladaSimple(QGraphicsScene):
         self.canvas.axes.set_xlim(x_min, x_max)
         self.canvas.axes.set_ylim(y_min, y_max)
 
-        plt.title("Escalada Simple (Paso {})".format(i+1))
+        plt.title("Escalada Simple (Cantidad de Pasos: {})".format(i+1))
         
         ultimo_y_positivo = abs(list(pos.items())[-1][1][1]) + 1
         
         # Agregar texto al pie de la figura
-        plt.text(0.5, -0.1, f"Profundidad máxima: {ultimo_y_positivo}", fontsize=9, ha='center', transform=self.canvas.axes.transAxes)
+        plt.text(0.5, -0.1, f"Cantidad de Niveles: {ultimo_y_positivo}", fontsize=10, ha='center', transform=self.canvas.axes.transAxes)
 
         self.canvas.draw()
         
