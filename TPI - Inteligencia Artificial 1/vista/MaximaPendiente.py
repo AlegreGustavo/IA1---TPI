@@ -1,6 +1,6 @@
 import sys
 import random
-from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QLabel, QGraphicsScene, QGraphicsView, QGraphicsItem, QWidget
+from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QLabel, QGraphicsScene, QGraphicsView, QGraphicsItem, QWidget, QLineEdit
 from PySide6.QtGui import QPainter, QColor, QPen, QBrush
 from PySide6.QtCore import Qt, QPoint
 
@@ -33,6 +33,11 @@ class MaximaPendiente(QGraphicsScene):
         self.vistaMaximaPendienteGrafo.setLayout(self.vG_maximaPendieteLayout)
         ###        
         
+        self.cantPasos = 0
+        self.cantNiveles = 0
+        self.minimoLocal = "No"
+        self.estadoObjetivo = "No"
+        
         #CANVAS para dibujar los gráficos:
         self.canvas = None
         
@@ -51,13 +56,48 @@ class MaximaPendiente(QGraphicsScene):
         
         qL_maximaPendiente = QLabel("<h2>Máxima Pendiente</h2>", parent=self.vistaMaximaPendiente)
         qL_maximaPendiente.move(10, 10)
-
-        self.eR_maximaPendienteLayout.addWidget(qL_maximaPendiente)
         
+        # Preguntas y sus correspondientes QLineEdit
+        qL_seEncontroObjetivo = QLabel("¿Se encontró el estado objetivo?", parent=self.vistaMaximaPendiente)
+        qL_seEncontroObjetivo.move(20, 60)
+        self.qLE_seEncontroObjetivo = QLineEdit(parent=self.vistaMaximaPendiente)
+        self.qLE_seEncontroObjetivo.setReadOnly(True)
+        self.qLE_seEncontroObjetivo.move(250, 60)
+        
+        qL_seEncontroMinimoLocal = QLabel("¿Se encontró un mínimo local?", parent=self.vistaMaximaPendiente)
+        qL_seEncontroMinimoLocal.move(20, 90)
+        self.qLE_seEncontroMinimoLocal = QLineEdit(parent=self.vistaMaximaPendiente)
+        self.qLE_seEncontroMinimoLocal.setReadOnly(True)
+        self.qLE_seEncontroMinimoLocal.move(250, 90)
+        
+        qL_cantidadPasos = QLabel("Cantidad de Pasos:", parent=self.vistaMaximaPendiente)
+        qL_cantidadPasos.move(20, 120)
+        self.qLE_cantidadPasos = QLineEdit(parent=self.vistaMaximaPendiente)
+        self.qLE_cantidadPasos.setReadOnly(True)
+        self.qLE_cantidadPasos.move(250, 120)
+        
+        qL_cantidadNiveles = QLabel("Cantidad de Niveles:", parent=self.vistaMaximaPendiente)
+        qL_cantidadNiveles.move(20, 150)
+        self.qLE_cantidadNiveles = QLineEdit(parent=self.vistaMaximaPendiente)
+        self.qLE_cantidadNiveles.setReadOnly(True)
+        self.qLE_cantidadNiveles.move(250, 150)
+
+        # Agregar los widgets al layout
+        self.eR_maximaPendienteLayout.addWidget(qL_maximaPendiente)
+        self.eR_maximaPendienteLayout.addWidget(qL_seEncontroObjetivo)
+        self.eR_maximaPendienteLayout.addWidget(self.qLE_seEncontroObjetivo)
+        self.eR_maximaPendienteLayout.addWidget(qL_seEncontroMinimoLocal)
+        self.eR_maximaPendienteLayout.addWidget(self.qLE_seEncontroMinimoLocal)
+        self.eR_maximaPendienteLayout.addWidget(qL_cantidadPasos)
+        self.eR_maximaPendienteLayout.addWidget(self.qLE_cantidadPasos)
+        self.eR_maximaPendienteLayout.addWidget(qL_cantidadNiveles)
+        self.eR_maximaPendienteLayout.addWidget(self.qLE_cantidadNiveles)
+        
+        # Establecer el layout en la vista de Máxima Pendiente
         self.vistaMaximaPendiente.setLayout(self.eR_maximaPendienteLayout)
         
-        ### Vista que corresponde al grafo de la Máxima Pendiente:###
-        self.vistaMaximaPendienteGrafo.setGeometry((self.master.width() / 2) + (self.master.width() / 6), self.master.height() * 2 / 3, self.master.width() / 3, self.master.height() /3 )
+        ### Vista que corresponde al grafo de la Máxima Pendiente ###
+        self.vistaMaximaPendienteGrafo.setGeometry((self.master.width() / 2) + (self.master.width() / 6), self.master.height() * 2 / 3, self.master.width() / 3, self.master.height() / 3)
         
         centralWidgetMaximaPendiente = QWidget(self.vistaMaximaPendienteGrafo)
         
@@ -75,6 +115,7 @@ class MaximaPendiente(QGraphicsScene):
         
     def visualizacion_arbol_paso_a_paso(self, grafoMaximaPendiente, nodos, i, posMaximaPendiente, nodoFinal, estado_menor_valor):
         self.limpiarCanvas()
+        GenerarInforme = False
         subgrafo = grafoMaximaPendiente.subgraph(nodos[:i+1])
         pos = dict(list(posMaximaPendiente.items())[:i+1])
         
@@ -109,6 +150,10 @@ class MaximaPendiente(QGraphicsScene):
                 
                 # Agregar anotación
                 anotaciones.append((x_pos, y_pos, "Mínimo Local"))
+            
+            self.minimoLocal = "Sí"
+            GenerarInforme = True
+            self.estadoObjetivo = "No"
 
         # Si el nodoFinal es igual al último nodo del grafo y el subgrafo es igual al grafoMaximaPendiente, el último nodo del subgrafo será VERDE
         if nodoFinal == list(grafoMaximaPendiente.nodes())[-1] and nx.is_isomorphic(subgrafo, grafoMaximaPendiente):
@@ -119,6 +164,10 @@ class MaximaPendiente(QGraphicsScene):
             y_pos = min(pos.values(), key=lambda x: x[1])[1] - 0.40  # Ubicado abajo del todo
             # Agregar anotación
             anotaciones.append((x_pos, y_pos, "Estado Objetivo"))
+        
+            self.estadoObjetivo = "Sí"
+            GenerarInforme = True
+            self.minimoLocal = "No"
 
         nx.draw(subgrafo, pos, ax=self.canvas.axes, with_labels=True, nodelist=pos, node_color=colores, edge_color='black', node_size=500)
         
@@ -137,13 +186,18 @@ class MaximaPendiente(QGraphicsScene):
         self.canvas.axes.set_ylim(y_min, y_max)
 
         plt.title("Máxima Pendiente (Cantidad de Pasos: {})".format(i+1))
+        self.cantPasos = format(i+1)
         
         ultimo_y_positivo = abs(list(pos.items())[-1][1][1]) + 1
+        self.cantNiveles = ultimo_y_positivo
         
         # Agregar texto al pie de la figura
         plt.text(0.5, -0.1, f"Cantidad de Niveles: {ultimo_y_positivo}", fontsize=10, ha='center', transform=self.canvas.axes.transAxes)
         
         self.canvas.draw()
+        
+        if(GenerarInforme):
+            self.actualizarValores()
         
         plt.close(self.canvas.fig)  # Cerrar la figura después de dibujarla
 
@@ -157,3 +211,9 @@ class MaximaPendiente(QGraphicsScene):
         # Crear un nuevo canvas y agregarlo al layout vertical
         self.canvas = PlotCanvas(self.centralWidget, width=5, height=4)
         self.vG_maximaPendieteLayout.addWidget(self.canvas)
+    
+    def actualizarValores(self):
+        self.qLE_seEncontroObjetivo.setText(str(self.estadoObjetivo))
+        self.qLE_seEncontroMinimoLocal.setText(str(self.minimoLocal))
+        self.qLE_cantidadPasos.setText(str(self.cantPasos))
+        self.qLE_cantidadNiveles.setText(str(self.cantNiveles))

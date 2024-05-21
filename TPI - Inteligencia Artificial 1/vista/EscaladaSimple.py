@@ -1,6 +1,6 @@
 import sys
 import random
-from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QLabel, QGraphicsScene, QGraphicsView, QGraphicsItem, QWidget
+from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QLabel, QGraphicsScene, QGraphicsView, QGraphicsItem, QWidget, QLineEdit
 from PySide6.QtGui import QPainter, QColor, QPen, QBrush
 from PySide6.QtCore import Qt, QPoint
 
@@ -33,6 +33,11 @@ class EscaladaSimple(QGraphicsScene):
 
         self.vistaEscaladaSimpleGrafo.setLayout(self.vG_escaladaSimpleLayout)
         ###
+        
+        self.cantPasos = 0
+        self.cantNiveles = 0
+        self.minimoLocal = "No"
+        self.estadoObjetivo = "No"
 
         #CANVAS para dibujar los gráficos:
         self.canvas = None
@@ -51,9 +56,41 @@ class EscaladaSimple(QGraphicsScene):
         self.vistaEscaladaSimple.setGeometry(self.master.width() / 2, self.master.height() / 3, self.master.width() / 2, self.master.height() / 3)
         
         qL_escaladaSimple = QLabel("<h2>Escalada Simple</h2>", parent=self.vistaEscaladaSimple)
-        qL_escaladaSimple.move(10, 10)
+        
+        qL_seEncontroObjetivo = QLabel("Se encontró el estado objetivo?", parent=self.vistaEscaladaSimple)
+        qL_seEncontroObjetivo.move(20, 60)
+        self.qLE_seEncontroObjetivo = QLineEdit(parent=self.vistaEscaladaSimple)
+        self.qLE_seEncontroObjetivo.setReadOnly(True)
+        self.qLE_seEncontroObjetivo.move(200, 60)
+        
+        qL_seEncontroMinimoLocal = QLabel("Se encontró un mínimo local?", parent=self.vistaEscaladaSimple)
+        qL_seEncontroMinimoLocal.move(20, 90)
+        self.qLE_seEncontroMinimoLocal = QLineEdit(parent=self.vistaEscaladaSimple)
+        self.qLE_seEncontroMinimoLocal.setReadOnly(True)
+        self.qLE_seEncontroMinimoLocal.move(200, 90)
+        
+        qL_cantidadPasos = QLabel("Cantidad de Pasos:", parent=self.vistaEscaladaSimple)
+        qL_cantidadPasos.move(20, 120)
+        self.qLE_cantidadPasos = QLineEdit(parent=self.vistaEscaladaSimple)
+        self.qLE_cantidadPasos.setReadOnly(True)
+        self.qLE_cantidadPasos.move(200, 120)
+        
+        qL_cantidadNiveles = QLabel("Cantidad de Niveles:", parent=self.vistaEscaladaSimple)
+        qL_cantidadNiveles.move(20, 150)
+        self.qLE_cantidadNiveles = QLineEdit(parent=self.vistaEscaladaSimple)
+        self.qLE_cantidadNiveles.setReadOnly(True)
+        self.qLE_cantidadNiveles.move(200, 150)
 
-        self.eR_escaladaSimpleLayout.addWidget(qL_escaladaSimple)        
+        self.eR_escaladaSimpleLayout.addWidget(qL_escaladaSimple)
+        self.eR_escaladaSimpleLayout.addWidget(qL_seEncontroObjetivo)
+        self.eR_escaladaSimpleLayout.addWidget(self.qLE_seEncontroObjetivo)
+        self.eR_escaladaSimpleLayout.addWidget(qL_seEncontroMinimoLocal)
+        self.eR_escaladaSimpleLayout.addWidget(self.qLE_seEncontroMinimoLocal)
+        self.eR_escaladaSimpleLayout.addWidget(qL_cantidadPasos)
+        self.eR_escaladaSimpleLayout.addWidget(self.qLE_cantidadPasos)
+        self.eR_escaladaSimpleLayout.addWidget(qL_cantidadNiveles)
+        self.eR_escaladaSimpleLayout.addWidget(self.qLE_cantidadNiveles)
+        
         ### 
         #
         # Vista que corresponde al grafo de la Escalada Simple:
@@ -77,6 +114,7 @@ class EscaladaSimple(QGraphicsScene):
         
     def visualizacion_arbol_paso_a_paso(self, grafoEscaladaSimple, nodos, i, posEscaladaSimple, nodoFinal, estado_menor_valor):
         self.limpiarCanvas()
+        GenerarInforme = False
         subgrafo = grafoEscaladaSimple.subgraph(nodos[:i+1])
         pos = dict(list(posEscaladaSimple.items())[:i+1])
         
@@ -85,12 +123,12 @@ class EscaladaSimple(QGraphicsScene):
         
         # Variables para almacenar posiciones de las anotaciones
         anotaciones = []
-
+        
         # Si el nodoFinal no es igual al último nodo del subgrafo y el grafo es igual al grafoEscaladaSimple, el último nodo del subgrafo será ROJO
         if nodoFinal != list(grafoEscaladaSimple.nodes())[-1] and nx.is_isomorphic(subgrafo, grafoEscaladaSimple):
             # Variable para almacenar la posición donde se encontró estado_menor_valor
             indice_minimo_local = 0
-            posicion_minimo_local = None
+            posicion_minimo_local = False
 
             # Recorrer el diccionario pos
             for nodo, posicion in pos.items():
@@ -111,7 +149,11 @@ class EscaladaSimple(QGraphicsScene):
                 
                 # Agregar anotación
                 anotaciones.append((x_pos, y_pos, "Mínimo Local"))
-
+            
+            self.minimoLocal = "Sí"
+            GenerarInforme = True
+            self.estadoObjetivo = "No"
+            
         # Si el nodoFinal es igual al último nodo del subgrafo y el grafo es igual al grafoEscaladaSimple, el último nodo del subgrafo será VERDE
         if nodoFinal == list(grafoEscaladaSimple.nodes())[-1] and nx.is_isomorphic(subgrafo, grafoEscaladaSimple):
             colores[-1] = 'green'
@@ -121,6 +163,10 @@ class EscaladaSimple(QGraphicsScene):
             y_pos = min(pos.values(), key=lambda x: x[1])[1] - 0.40  # Ubicado abajo del todo
             # Agregar anotación
             anotaciones.append((x_pos, y_pos, "Estado Objetivo"))
+            
+            self.estadoObjetivo = "Sí"
+            GenerarInforme = True
+            self.minimoLocal = "No"
 
         nx.draw(subgrafo, pos, ax=self.canvas.axes, with_labels=True, nodelist=pos, node_color=colores, edge_color='black', node_size=500)
         
@@ -139,13 +185,18 @@ class EscaladaSimple(QGraphicsScene):
         self.canvas.axes.set_ylim(y_min, y_max)
 
         plt.title("Escalada Simple (Cantidad de Pasos: {})".format(i+1))
+        self.cantPasos = format(i+1)
         
         ultimo_y_positivo = abs(list(pos.items())[-1][1][1]) + 1
+        self.cantNiveles = ultimo_y_positivo
         
         # Agregar texto al pie de la figura
         plt.text(0.5, -0.1, f"Cantidad de Niveles: {ultimo_y_positivo}", fontsize=10, ha='center', transform=self.canvas.axes.transAxes)
 
         self.canvas.draw()
+        
+        if(GenerarInforme):
+            self.actualizarValores()
         
         plt.close(self.canvas.fig)  # Cerrar la figura después de dibujarla
 
@@ -159,3 +210,9 @@ class EscaladaSimple(QGraphicsScene):
         # Crear un nuevo canvas y agregarlo al layout vertical
         self.canvas = PlotCanvas(self.centralWidget, width=5, height=4)
         self.vG_escaladaSimpleLayout.addWidget(self.canvas)
+    
+    def actualizarValores(self):
+        self.qLE_seEncontroObjetivo.setText(str(self.estadoObjetivo))
+        self.qLE_seEncontroMinimoLocal.setText(str(self.minimoLocal))
+        self.qLE_cantidadPasos.setText(str(self.cantPasos))
+        self.qLE_cantidadNiveles.setText(str(self.cantNiveles))
